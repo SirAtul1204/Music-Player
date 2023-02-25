@@ -5,7 +5,14 @@ export const passwordSchema = z
   .string()
   .min(4, "Minimum 4 characters required");
 
+export const nameSchema = z.string().min(1);
+
 export const LoginResponseSchema = z.object({
+  message: z.string(),
+  isSuccess: z.boolean(),
+});
+
+export const RegisterResponseSchema = z.object({
   message: z.string(),
   isSuccess: z.boolean(),
 });

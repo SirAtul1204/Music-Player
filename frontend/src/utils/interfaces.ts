@@ -22,3 +22,9 @@ export interface IOpenToastAction {
 export interface LoaderProps {
   message?: string;
 }
+
+export interface IRegister {
+  name: string;
+  email: string;
+  password: string;
+}

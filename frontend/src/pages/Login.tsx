@@ -1,19 +1,16 @@
 import Loader from "@components/Loader";
-import { Typography } from "@mui/material";
-import { TextField } from "@mui/material";
-import { Button } from "@mui/material";
-import { Box } from "@mui/material";
-import { Paper } from "@mui/material";
-import { Grid } from "@mui/material";
+import { Typography, TextField, Button, Box, Paper, Grid } from "@mui/material";
 import { openToast } from "@redux/toastSlice";
 import Service from "@utils/service";
 import { emailSchema, passwordSchema } from "@utils/zodSchemas";
 import { FormEvent } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isLoading, setLoading] = useState(false);
 
@@ -26,16 +23,18 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     if (isEmailError || isPasswordError) {
-      openToast({ message: "Enter Valid Details", severity: "error" });
+      dispatch(
+        openToast({ message: "Enter Valid Details", severity: "error" })
+      );
       return;
     }
     const res = await Service.login({ email, password });
     if (res.isSuccess) {
-      openToast({ message: res.message, severity: "success" });
+      dispatch(openToast({ message: res.message, severity: "success" }));
       navigate("/");
     } else {
       setLoading(false);
-      openToast({ message: res.message, severity: "error" });
+      dispatch(openToast({ message: res.message, severity: "error" }));
     }
   };
 
@@ -71,7 +70,7 @@ const Login = () => {
                       fullWidth
                       required
                       value={email}
-                      onChange={(e) => setEmail(e.target.value.trim())}
+                      onChange={(e) => setEmail(e.target.value)}
                       error={isEmailError}
                       helperText={
                         isEmailError ? "Please enter a valid email" : ""
