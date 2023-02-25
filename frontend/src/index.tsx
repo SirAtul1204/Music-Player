@@ -13,6 +13,9 @@ import "./index.css";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./themeOptions";
+import Toast from "@components/Toast";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -21,8 +24,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
+      <Provider store={store}>
+        <CssBaseline />
+        <App />
+        <Toast />
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>
 );
