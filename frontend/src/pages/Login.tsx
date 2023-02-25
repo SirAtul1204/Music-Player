@@ -3,8 +3,7 @@ import { Typography, TextField, Button, Box, Paper, Grid } from "@mui/material";
 import { openToast } from "@redux/toastSlice";
 import Service from "@utils/service";
 import { emailSchema, passwordSchema } from "@utils/zodSchemas";
-import { FormEvent } from "react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 

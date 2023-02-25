@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { IOpenToastAction, IToastState } from "@utils/interfaces";
 
 const initialState: IToastState = {
-  open: true,
+  open: false,
   severity: "success",
   message: "This is a snackbar",
 };

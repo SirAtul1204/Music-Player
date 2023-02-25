@@ -1,12 +1,6 @@
-import { Typography } from "@mui/material";
-import { TextField } from "@mui/material";
-import { Button } from "@mui/material";
-import { Paper } from "@mui/material";
-import { Grid } from "@mui/material";
-import { Box } from "@mui/material";
+import { Typography, TextField, Button, Paper, Grid, Box } from "@mui/material";
 import { emailSchema, nameSchema, passwordSchema } from "@utils/zodSchemas";
-import { FormEvent } from "react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { openToast } from "@redux/toastSlice";
