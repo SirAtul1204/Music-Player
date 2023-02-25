@@ -30,3 +30,17 @@ export const GetMusicResponseSchema = z.object({
     })
   ),
 });
+
+export const DeleteMusicResponseSchema = z.object({
+  message: z.string(),
+  isSuccess: z.string(),
+  musics: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      description: z.string(),
+      coverAlbum: z.string(),
+      artistName: z.string(),
+    })
+  ),
+});

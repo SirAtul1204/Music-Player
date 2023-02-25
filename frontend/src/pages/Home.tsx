@@ -8,6 +8,8 @@ import {
   GridColDef,
   GridCellParams,
   MuiEvent,
+  GridSelectionModel,
+  GridCellEditCommitParams,
 } from "@mui/x-data-grid";
 import { useState } from "react";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
@@ -17,6 +19,9 @@ import { useEffect } from "react";
 import Service from "@utils/service";
 import { useDispatch } from "react-redux";
 import { openToast } from "@redux/toastSlice";
+import { Button } from "@mui/material";
+import { Modal } from "@mui/material";
+import { Paper } from "@mui/material";
 
 const columns: GridColDef[] = [
   {
@@ -39,21 +44,25 @@ const columns: GridColDef[] = [
     field: "name",
     headerName: "Name",
     width: 150,
+    editable: true,
   },
   {
     field: "description",
     headerName: "Description",
     width: 200,
+    editable: true,
   },
   {
     field: "coverAlbum",
     headerName: "Cover Album",
     width: 200,
+    editable: true,
   },
   {
     field: "artistName",
-    headerName: "ArtistName",
+    headerName: "Artist Name",
     width: 200,
+    editable: true,
   },
 ];
 
@@ -62,6 +71,8 @@ const Home = () => {
   const [isPlaylistLoading, setPlaylistLoading] = useState(false);
   const [playlist, setPlaylist] = useState<IRow[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<IRow | null>(null);
+  const [selected, setSelected] = useState<GridSelectionModel>([]);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const handlePlay = (params: GridCellParams, e: MuiEvent) => {
     if (params.field === "playButton") {
@@ -78,6 +89,38 @@ const Home = () => {
 
       setPlaylist(newPlaylist);
     }
+  };
+
+  const handleEdit = (p: GridCellEditCommitParams, e: MuiEvent) => {
+    const newPlaylist = [...playlist];
+    for (let i = 0; i < newPlaylist.length; i++) {
+      if (p.id === newPlaylist[i].id) {
+        console.log(p);
+        //@ts-ignore
+        newPlaylist[i][`${p.field}`] = p.value;
+      }
+    }
+
+    setPlaylist(newPlaylist);
+  };
+
+  const openDeleteConfirm = () => {
+    setModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    setCurrentPlaying(null);
+    const res = await Service.deleteSelected(selected as string[]);
+    if (res.isSuccess && res.musics && res.musics.length > 0) {
+      setPlaylist(res.musics);
+      dispatch(openToast({ message: res.message, severity: "success" }));
+    } else {
+      dispatch(openToast({ message: res.message, severity: "error" }));
+    }
+  };
+
+  const handleSelect = (ids: GridSelectionModel) => {
+    setSelected(ids);
   };
 
   useEffect(() => {
@@ -108,7 +151,7 @@ const Home = () => {
   }, [dispatch]);
 
   return (
-    <Box sx={{ maxWidth: "90%", margin: "auto" }}>
+    <Box sx={{ maxWidth: 900, margin: "auto" }}>
       <Nav />
       <Grid
         sx={{ marginTop: 2 }}
@@ -121,7 +164,24 @@ const Home = () => {
         <Grid item>
           <Typography variant="h6">Enjoy your playlist</Typography>
         </Grid>
-        <Grid item width={830}>
+        <Grid item container justifyContent="space-between">
+          <Grid item>
+            <Typography>
+              Double Click to Edit, Enter to Save, Esc to Cancel
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              onClick={openDeleteConfirm}
+            >
+              Delete Selected
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid item width={900}>
           <DataGrid
             rows={playlist}
             columns={columns}
@@ -134,9 +194,78 @@ const Home = () => {
             hideFooter
             loading={isPlaylistLoading}
             onCellClick={handlePlay}
+            onCellEditCommit={handleEdit}
+            checkboxSelection
+            onSelectionModelChange={handleSelect}
+            disableSelectionOnClick
           />
         </Grid>
       </Grid>
+      <Modal open={isModalOpen} onClose={() => setModalOpen(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <Paper
+            elevation={10}
+            sx={{
+              paddingX: 2,
+              paddingY: 3,
+              width: 400,
+              height: 200,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Grid
+              container
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+              gap={3}
+            >
+              <Grid item>
+                <Typography>
+                  Are you sure you want to delete selected music?
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                container
+                justifyContent="center"
+                alignItems="center"
+                gap={3}
+              >
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    onClick={() => setModalOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    size="small"
+                    onClick={handleDelete}
+                  >
+                    Yes, Delete
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Box>
+      </Modal>
     </Box>
   );
 };

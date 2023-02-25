@@ -1,5 +1,6 @@
 import { ILogin, IRegister } from "./interfaces";
 import {
+  DeleteMusicResponseSchema,
   GetMusicResponseSchema,
   LoginResponseSchema,
   RegisterResponseSchema,
@@ -65,6 +66,22 @@ export default class Service {
       const list = data.musics.map((d) => {
         return { ...d, isPlaying: false };
       });
+      return { message: data.message, isSuccess: data.isSuccess, musics: list };
+    } catch (e: any) {
+      return {
+        message: e.issues[0].message,
+        isSuccess: false,
+      };
+    }
+  }
+  static async deleteSelected(ids: string[]) {
+    try {
+      const res = await delay();
+      const data = DeleteMusicResponseSchema.parse(res);
+      const list = data.musics.map((d) => {
+        return { ...d, isPlaying: false };
+      });
+
       return { message: data.message, isSuccess: data.isSuccess, musics: list };
     } catch (e: any) {
       return {
