@@ -1,5 +1,9 @@
 import { ILogin, IRegister } from "./interfaces";
-import { LoginResponseSchema, RegisterResponseSchema } from "./zodSchemas";
+import {
+  GetMusicResponseSchema,
+  LoginResponseSchema,
+  RegisterResponseSchema,
+} from "./zodSchemas";
 
 function delay(time = 100) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -28,6 +32,44 @@ export default class Service {
       return {
         isSuccess: false,
         message: e.issues[0].message,
+      };
+    }
+  }
+
+  static async getAllMusic(userId: string) {
+    try {
+      const res = {
+        message: "All music fetched",
+        isSuccess: true,
+        musics: [
+          {
+            id: "1",
+            name: "Suzume",
+            description: "Hello World",
+            coverAlbum: "Singh",
+            artistName: "Atul",
+            isPlaying: false,
+          },
+          {
+            id: "2",
+            name: "Suzume",
+            description: "Hello World",
+            coverAlbum: "Singh",
+            artistName: "Atul",
+            isPlaying: true,
+          },
+        ],
+      };
+
+      const data = GetMusicResponseSchema.parse(res);
+      const list = data.musics.map((d) => {
+        return { ...d, isPlaying: false };
+      });
+      return { message: data.message, isSuccess: data.isSuccess, musics: list };
+    } catch (e: any) {
+      return {
+        message: e.issues[0].message,
+        isSuccess: false,
       };
     }
   }

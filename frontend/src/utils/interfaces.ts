@@ -28,3 +28,12 @@ export interface IRegister {
   email: string;
   password: string;
 }
+
+export interface IRow {
+  id: string;
+  name: string;
+  description: string;
+  coverAlbum: string;
+  artistName: string;
+  isPlaying: boolean;
+}

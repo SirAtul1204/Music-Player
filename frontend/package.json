@@ -9,6 +9,7 @@
     "@fontsource/quicksand": "^4.5.12",
     "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.10",
+    "@mui/x-data-grid": "^5.17.25",
     "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",

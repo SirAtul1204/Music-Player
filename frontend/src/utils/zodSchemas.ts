@@ -16,3 +16,17 @@ export const RegisterResponseSchema = z.object({
   message: z.string(),
   isSuccess: z.boolean(),
 });
+
+export const GetMusicResponseSchema = z.object({
+  message: z.string(),
+  isSuccess: z.boolean(),
+  musics: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      description: z.string(),
+      coverAlbum: z.string(),
+      artistName: z.string(),
+    })
+  ),
+});
