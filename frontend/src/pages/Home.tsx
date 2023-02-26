@@ -20,8 +20,9 @@ import Service from "@utils/service";
 import { useDispatch } from "react-redux";
 import { openToast } from "@redux/toastSlice";
 import { Button } from "@mui/material";
-import { Modal } from "@mui/material";
-import { Paper } from "@mui/material";
+import DeleteModal from "@components/DeleteModal";
+import AddIcon from "@mui/icons-material/Add";
+import UploadModal from "@components/UploadModal";
 
 const columns: GridColDef[] = [
   {
@@ -72,7 +73,8 @@ const Home = () => {
   const [playlist, setPlaylist] = useState<IRow[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<IRow | null>(null);
   const [selected, setSelected] = useState<GridSelectionModel>([]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
   const handlePlay = (params: GridCellParams, e: MuiEvent) => {
     if (params.field === "playButton") {
@@ -105,7 +107,7 @@ const Home = () => {
   };
 
   const openDeleteConfirm = () => {
-    setModalOpen(true);
+    setDeleteModalOpen(true);
   };
 
   const handleDelete = async () => {
@@ -164,7 +166,7 @@ const Home = () => {
         <Grid item>
           <Typography variant="h6">Enjoy your playlist</Typography>
         </Grid>
-        <Grid item container justifyContent="space-between">
+        <Grid item container justifyContent="space-between" alignItems="center">
           <Grid item>
             <Typography>
               Double Click to Edit, Enter to Save, Esc to Cancel
@@ -178,6 +180,17 @@ const Home = () => {
               onClick={openDeleteConfirm}
             >
               Delete Selected
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              size="small"
+              color="secondary"
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => setEditModalOpen(true)}
+            >
+              Upload
             </Button>
           </Grid>
         </Grid>
@@ -201,71 +214,15 @@ const Home = () => {
           />
         </Grid>
       </Grid>
-      <Modal open={isModalOpen} onClose={() => setModalOpen(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <Paper
-            elevation={10}
-            sx={{
-              paddingX: 2,
-              paddingY: 3,
-              width: 400,
-              height: 200,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Grid
-              container
-              direction="column"
-              alignItems="center"
-              justifyContent="center"
-              gap={3}
-            >
-              <Grid item>
-                <Typography>
-                  Are you sure you want to delete selected music?
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                container
-                justifyContent="center"
-                alignItems="center"
-                gap={3}
-              >
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    size="small"
-                    onClick={() => setModalOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    size="small"
-                    onClick={handleDelete}
-                  >
-                    Yes, Delete
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Paper>
-        </Box>
-      </Modal>
+      <DeleteModal
+        isModalOpen={isDeleteModalOpen}
+        onCloseHandler={() => setDeleteModalOpen(false)}
+        onDeleteHandler={handleDelete}
+      />
+      <UploadModal
+        isModalOpen={isEditModalOpen}
+        onCloseHandler={() => setEditModalOpen(false)}
+      />
     </Box>
   );
 };

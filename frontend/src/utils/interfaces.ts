@@ -37,3 +37,12 @@ export interface IRow {
   artistName: string;
   isPlaying: boolean;
 }
+
+export interface ModalProps {
+  isModalOpen: boolean;
+  onCloseHandler: () => void;
+}
+
+export interface DeleteModalProps extends ModalProps {
+  onDeleteHandler: () => void;
+}
