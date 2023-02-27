@@ -48,6 +48,10 @@ export interface DeleteModalProps extends ModalProps {
   onDeleteHandler: () => void;
 }
 
-export interface AuthHOCProps {
-  element: FC;
+export interface IAddMusic {
+  title: string;
+  description: string;
+  coverAlbum: string;
+  artist: string;
+  file: File;
 }

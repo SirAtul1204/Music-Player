@@ -1,4 +1,4 @@
-import { ILogin, IRegister } from "./interfaces";
+import { IAddMusic, ILogin, IRegister } from "./interfaces";
 import {
   DeleteMusicResponseSchema,
   GeneralResponseSchema,
@@ -150,6 +150,38 @@ export default class Service {
     } catch (e) {
       return {
         message: "Error",
+        isSuccess: false,
+      };
+    }
+  }
+
+  static async addMusic({
+    title,
+    description,
+    coverAlbum,
+    artist,
+    file,
+  }: IAddMusic) {
+    try {
+      const formData = new FormData();
+      formData.append("name", title);
+      formData.append("description", description);
+      formData.append("coverAlbum", coverAlbum);
+      formData.append("artistName", artist);
+      formData.append("file", file);
+
+      const response = await fetch(backendUrl + "music/", {
+        method: "POST",
+        mode: "cors",
+        credentials: "include",
+        body: formData,
+      });
+      const data = await response.json();
+      const res = GeneralResponseSchema.parse(data);
+      return res;
+    } catch (e) {
+      return {
+        message: "Couldn't save your file, please try again",
         isSuccess: false,
       };
     }

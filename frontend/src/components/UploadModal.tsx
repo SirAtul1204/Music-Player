@@ -1,17 +1,54 @@
 import { Modal, Box, Paper, Grid, Typography, Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { ModalProps } from "@utils/interfaces";
-import { FC, useState, FormEvent } from "react";
+import { FC, useState, FormEvent, useCallback } from "react";
 import AudioFileIcon from "@mui/icons-material/AudioFile";
+import { useDropzone } from "react-dropzone";
+import Service from "@utils/service";
+import { useDispatch } from "react-redux";
+import { openToast } from "@redux/toastSlice";
 
 const UploadModal: FC<ModalProps> = ({ isModalOpen, onCloseHandler }) => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [coverAlbum, setCoverAlbum] = useState("");
   const [artist, setArtist] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [isCancelDisabled, setCancelDisabled] = useState(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onDrop = useCallback((acceptedFiles: any) => {
+    setFile(acceptedFiles[0]);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "audio/mpeg": [".mp3"],
+    },
+  });
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!file) {
+      alert("Please select file");
+      return;
+    }
+    setCancelDisabled(true);
+    const res = await Service.addMusic({
+      title,
+      description,
+      coverAlbum,
+      artist,
+      file,
+    });
+
+    if (res.isSuccess) {
+      dispatch(openToast({ message: res.message, severity: "success" }));
+      onCloseHandler();
+    } else {
+      dispatch(openToast({ message: res.message, severity: "error" }));
+      setCancelDisabled(false);
+    }
   };
 
   return (
@@ -95,6 +132,7 @@ const UploadModal: FC<ModalProps> = ({ isModalOpen, onCloseHandler }) => {
               </Grid>
               <Grid item>
                 <Box
+                  {...getRootProps()}
                   sx={{
                     width: "100%",
                     height: 200,
@@ -106,10 +144,14 @@ const UploadModal: FC<ModalProps> = ({ isModalOpen, onCloseHandler }) => {
                     ":hover": {
                       opacity: 0.7,
                     },
+                    opacity: isDragActive ? 0.7 : 1,
                   }}
                 >
+                  <input {...getInputProps()} />
                   <AudioFileIcon />
-                  <Typography>Drag and Drop file here</Typography>
+                  <Typography>
+                    {file ? file.name : "Drag and Drop file here"}
+                  </Typography>
                 </Box>
               </Grid>
               <Grid
@@ -125,6 +167,7 @@ const UploadModal: FC<ModalProps> = ({ isModalOpen, onCloseHandler }) => {
                     size="small"
                     variant="contained"
                     onClick={onCloseHandler}
+                    disabled={isCancelDisabled}
                   >
                     Cancel
                   </Button>
@@ -136,7 +179,7 @@ const UploadModal: FC<ModalProps> = ({ isModalOpen, onCloseHandler }) => {
                     variant="contained"
                     type="submit"
                   >
-                    Upload
+                    {isCancelDisabled ? "Uploading" : "Upload"}
                   </Button>
                 </Grid>
               </Grid>
