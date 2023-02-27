@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MusicEntity } from './entities/MusicEntity';
 import { UserEntity } from './entities/UserEntity';
+import { MusicModule } from './music/music.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
       synchronize: true,
     }),
     UserModule,
+    MusicModule,
   ],
   controllers: [AppController],
   providers: [
