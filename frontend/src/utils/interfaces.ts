@@ -1,5 +1,4 @@
 import { AlertColor } from "@mui/material";
-import { FC } from "react";
 
 export interface ILogin {
   email: string;

@@ -130,6 +130,10 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log(currentPlaying);
+  });
+
+  useEffect(() => {
     let flag = true;
     for (let i = 0; i < playlist.length; i++) {
       if (playlist[i].isPlaying) {
@@ -146,7 +150,7 @@ const Home = () => {
   useEffect(() => {
     if (isAuth) {
       setPlaylistLoading(true);
-      Service.getAllMusic("userId").then((data) => {
+      Service.getAllMusic().then((data) => {
         if (data.isSuccess && data.musics && data.musics.length > 0) {
           setPlaylist(data.musics);
           dispatch(openToast({ message: data.message, severity: "success" }));
@@ -237,6 +241,17 @@ const Home = () => {
         isModalOpen={isEditModalOpen}
         onCloseHandler={() => setEditModalOpen(false)}
       />
+      {/* <audio
+        style={{
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          width: 0,
+          height: 0,
+        }}
+        autoPlay
+        src="https://download.samplelib.com/mp3/sample-3s.mp3"
+      /> */}
     </Box>
   );
 };

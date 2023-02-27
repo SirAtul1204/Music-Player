@@ -58,30 +58,18 @@ export default class Service {
     }
   }
 
-  static async getAllMusic(userId: string) {
+  static async getAllMusic() {
     try {
-      const res = {
-        message: "All music fetched",
-        isSuccess: true,
-        musics: [
-          {
-            id: "1",
-            name: "Suzume",
-            description: "Hello World",
-            coverAlbum: "Singh",
-            artistName: "Atul",
-            isPlaying: false,
-          },
-          {
-            id: "2",
-            name: "Suzume",
-            description: "Hello World",
-            coverAlbum: "Singh",
-            artistName: "Atul",
-            isPlaying: true,
-          },
-        ],
-      };
+      const response = await fetch(backendUrl + "music/", {
+        method: "GET",
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const res = await response.json();
 
       const data = GetMusicResponseSchema.parse(res);
       const list = data.musics.map((d) => {
