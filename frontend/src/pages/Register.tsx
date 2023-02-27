@@ -1,17 +1,19 @@
 import { Typography, TextField, Button, Paper, Grid, Box } from "@mui/material";
 import { emailSchema, nameSchema, passwordSchema } from "@utils/zodSchemas";
 import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { openToast } from "@redux/toastSlice";
 import Service from "@utils/service";
 import Loader from "@components/Loader";
+import useAuth from "@hooks/useAuth";
 
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [isLoading, setLoading] = useState(false);
+  const isAuth = useAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -48,6 +50,14 @@ const Register = () => {
       dispatch(openToast({ message: res.message, severity: "error" }));
     }
   };
+
+  if (isAuth === null) {
+    return <Loader />;
+  }
+
+  if (isAuth) {
+    return <Navigate to="/" />;
+  }
 
   if (isLoading) {
     return <Loader message="Submitting Details...." />;

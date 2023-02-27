@@ -23,6 +23,9 @@ import { Button } from "@mui/material";
 import DeleteModal from "@components/DeleteModal";
 import AddIcon from "@mui/icons-material/Add";
 import UploadModal from "@components/UploadModal";
+import useAuth from "@hooks/useAuth";
+import Loader from "@components/Loader";
+import { Navigate } from "react-router-dom";
 
 const columns: GridColDef[] = [
   {
@@ -69,6 +72,7 @@ const columns: GridColDef[] = [
 
 const Home = () => {
   const dispatch = useDispatch();
+  const isAuth = useAuth();
   const [isPlaylistLoading, setPlaylistLoading] = useState(false);
   const [playlist, setPlaylist] = useState<IRow[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<IRow | null>(null);
@@ -140,17 +144,27 @@ const Home = () => {
   }, [playlist]);
 
   useEffect(() => {
-    setPlaylistLoading(true);
-    Service.getAllMusic("userId").then((data) => {
-      if (data.isSuccess && data.musics && data.musics.length > 0) {
-        setPlaylist(data.musics);
-        dispatch(openToast({ message: data.message, severity: "success" }));
-      } else {
-        dispatch(openToast({ message: data.message, severity: "error" }));
-      }
-      setPlaylistLoading(false);
-    });
-  }, [dispatch]);
+    if (isAuth) {
+      setPlaylistLoading(true);
+      Service.getAllMusic("userId").then((data) => {
+        if (data.isSuccess && data.musics && data.musics.length > 0) {
+          setPlaylist(data.musics);
+          dispatch(openToast({ message: data.message, severity: "success" }));
+        } else {
+          dispatch(openToast({ message: data.message, severity: "error" }));
+        }
+        setPlaylistLoading(false);
+      });
+    }
+  }, [dispatch, isAuth]);
+
+  if (isAuth === null) {
+    return <Loader />;
+  }
+
+  if (!isAuth) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <Box sx={{ maxWidth: 900, margin: "auto" }}>

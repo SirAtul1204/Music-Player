@@ -4,14 +4,16 @@ import { openToast } from "@redux/toastSlice";
 import Service from "@utils/service";
 import { emailSchema, passwordSchema } from "@utils/zodSchemas";
 import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import useAuth from "@hooks/useAuth";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [isLoading, setLoading] = useState(false);
+  const isAuth = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,6 +38,14 @@ const Login = () => {
       dispatch(openToast({ message: res.message, severity: "error" }));
     }
   };
+
+  if (isAuth === null) {
+    return <Loader />;
+  }
+
+  if (isAuth) {
+    return <Navigate to="/" />;
+  }
 
   if (isLoading) {
     return <Loader message="Submitting details..." />;

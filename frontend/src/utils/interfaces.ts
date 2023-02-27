@@ -1,4 +1,5 @@
 import { AlertColor } from "@mui/material";
+import { FC } from "react";
 
 export interface ILogin {
   email: string;
@@ -45,4 +46,8 @@ export interface ModalProps {
 
 export interface DeleteModalProps extends ModalProps {
   onDeleteHandler: () => void;
+}
+
+export interface AuthHOCProps {
+  element: FC;
 }

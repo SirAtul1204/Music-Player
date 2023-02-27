@@ -7,16 +7,6 @@ export const passwordSchema = z
 
 export const nameSchema = z.string().min(1);
 
-export const LoginResponseSchema = z.object({
-  message: z.string(),
-  isSuccess: z.boolean(),
-});
-
-export const RegisterResponseSchema = z.object({
-  message: z.string(),
-  isSuccess: z.boolean(),
-});
-
 export const GetMusicResponseSchema = z.object({
   message: z.string(),
   isSuccess: z.boolean(),
@@ -33,7 +23,7 @@ export const GetMusicResponseSchema = z.object({
 
 export const DeleteMusicResponseSchema = z.object({
   message: z.string(),
-  isSuccess: z.string(),
+  isSuccess: z.boolean(),
   musics: z.array(
     z.object({
       id: z.string(),
@@ -43,4 +33,9 @@ export const DeleteMusicResponseSchema = z.object({
       artistName: z.string(),
     })
   ),
+});
+
+export const GeneralResponseSchema = z.object({
+  message: z.string(),
+  isSuccess: z.boolean(),
 });
