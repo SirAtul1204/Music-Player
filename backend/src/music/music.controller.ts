@@ -6,19 +6,15 @@ import {
   Param,
   Put,
   Req,
-  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { Controller, Post, Body } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { request } from 'http';
-import { MusicEntity } from 'src/entities/MusicEntity';
-import { UserEntity } from 'src/entities/UserEntity';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { bucket } from 'src/main';
-import { RequestWithUser } from 'src/utils/interfaces';
+import { AuthGuard } from '../guards/auth.guard';
+import { bucket } from '../main';
+import { RequestWithUser } from '../utils/interfaces';
 import { CreateMusicDto } from './dto/create-music.dto';
 import { DeleteMusicDto } from './dto/delete-music.dto';
 import { UpdateMusicDto } from './dto/update-music.dto';

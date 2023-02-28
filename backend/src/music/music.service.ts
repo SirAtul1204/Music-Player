@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { MusicEntity } from 'src/entities/MusicEntity';
-import { UserEntity } from 'src/entities/UserEntity';
-import { bucket } from 'src/main';
+import { MusicEntity } from '../entities/MusicEntity';
+import { UserEntity } from '../entities/UserEntity';
+import { bucket } from '../main';
 import { CreateMusicDto } from './dto/create-music.dto';
 import { UpdateMusicDto } from './dto/update-music.dto';
 

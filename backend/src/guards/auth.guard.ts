@@ -1,8 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
-import { IJwt } from 'src/utils/interfaces';
-// import { JwtPayload } from 'src/utils/interfaces';
+import { IJwt } from '../utils/interfaces';
 
 function validateRequest(request: any): boolean {
   const token = request.cookies['token'];
