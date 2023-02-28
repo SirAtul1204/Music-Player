@@ -18,7 +18,7 @@ async function bootstrap() {
     credentials: true,
     origin: [
       'http://localhost:3000',
-      'https://music-player-frontend.onrender.com',
+      'https://siratul-music-player.netlify.app',
     ],
   });
   app.use(cookieParser());
