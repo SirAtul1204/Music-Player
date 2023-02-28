@@ -41,7 +41,6 @@ const Register = () => {
     }
 
     const res = await Service.register({ name, email, password });
-    console.log(res);
     if (res.isSuccess) {
       dispatch(openToast({ message: res.message, severity: "success" }));
       navigate("/login");

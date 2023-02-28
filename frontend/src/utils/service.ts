@@ -1,4 +1,4 @@
-import { IAddMusic, ILogin, IRegister } from "./interfaces";
+import { IAddMusic, IEditMusic, ILogin, IRegister } from "./interfaces";
 import {
   DeleteMusicResponseSchema,
   GeneralResponseSchema,
@@ -29,7 +29,6 @@ export default class Service {
       const data = GeneralResponseSchema.parse(res);
       return data;
     } catch (e: any) {
-      console.log(e);
       return {
         isSuccess: false,
         message: e.issues[0].message,
@@ -51,7 +50,6 @@ export default class Service {
       const data = GeneralResponseSchema.parse(res);
       return data;
     } catch (e: any) {
-      console.log(e);
       return {
         isSuccess: false,
         message: e.issues[0].message,
@@ -84,22 +82,6 @@ export default class Service {
       };
     }
   }
-  static async deleteSelected(ids: string[]) {
-    try {
-      const res = await delay();
-      const data = DeleteMusicResponseSchema.parse(res);
-      const list = data.musics.map((d) => {
-        return { ...d, isPlaying: false };
-      });
-
-      return { message: data.message, isSuccess: data.isSuccess, musics: list };
-    } catch (e: any) {
-      return {
-        message: e.issues[0].message,
-        isSuccess: false,
-      };
-    }
-  }
 
   static async verifyToken() {
     try {
@@ -114,10 +96,8 @@ export default class Service {
 
       const res = await response.json();
       const data = GeneralResponseSchema.parse(res);
-      console.log(data);
       return data;
     } catch (e) {
-      console.log(e);
       return { message: "Wrong Token", isSuccess: false };
     }
   }
@@ -188,7 +168,6 @@ export default class Service {
       });
 
       const res = await response.json();
-      console.log(res);
       const data = PlayMusicResponseSchema.parse(res);
       return data;
     } catch (e) {
@@ -197,6 +176,68 @@ export default class Service {
         message: "Can't play that song. Please try again!",
         isSuccess: false,
         url: "",
+      };
+    }
+  }
+
+  static async editMusic(editMusicInformation: IEditMusic) {
+    try {
+      const response = await fetch(backendUrl + "music/", {
+        method: "PUT",
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: editMusicInformation.id,
+          name: editMusicInformation.name,
+          artistName: editMusicInformation.artist,
+          description: editMusicInformation.description,
+          coverAlbum: editMusicInformation.coverAlbum,
+        }),
+      });
+
+      const res = await response.json();
+      const data = GeneralResponseSchema.parse(res);
+      return data;
+    } catch (e) {
+      return {
+        message: "Can't edit selected songs. Please try again!",
+        isSuccess: false,
+      };
+    }
+  }
+
+  static async deleteMusics(ids: string[]) {
+    try {
+      const response = await fetch(backendUrl + "music/", {
+        method: "DELETE",
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ids }),
+      });
+
+      const res = await response.json();
+      const data = DeleteMusicResponseSchema.parse(res);
+      const list = data.musics.map((d) => {
+        return { ...d, isPlaying: false };
+      });
+      return {
+        message: data.message,
+        isSuccess: data.isSuccess,
+        count: data.count,
+        musics: list,
+      };
+    } catch (e) {
+      return {
+        message: "Can't delete selected songs. Please try again!",
+        isSuccess: false,
+        count: 0,
+        musics: [],
       };
     }
   }

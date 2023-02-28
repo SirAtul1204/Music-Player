@@ -11,7 +11,7 @@ import {
   GridSelectionModel,
   GridCellEditCommitParams,
 } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import { IRow } from "@utils/interfaces";
@@ -81,6 +81,8 @@ const Home = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [audioSrc, setAudioSrc] = useState<any>();
 
+  const audioRef = useRef<any>(null);
+
   const handlePlay = (params: GridCellParams, e: MuiEvent) => {
     if (params.field === "playButton") {
       const newPlaylist = [...playlist];
@@ -98,13 +100,24 @@ const Home = () => {
     }
   };
 
-  const handleEdit = (p: GridCellEditCommitParams, e: MuiEvent) => {
+  const handleEdit = async (p: GridCellEditCommitParams, e: MuiEvent) => {
     const newPlaylist = [...playlist];
     for (let i = 0; i < newPlaylist.length; i++) {
       if (p.id === newPlaylist[i].id) {
-        console.log(p);
         //@ts-ignore
         newPlaylist[i][`${p.field}`] = p.value;
+        const res = await Service.editMusic({
+          id: newPlaylist[i].id,
+          artist: newPlaylist[i].artistName,
+          coverAlbum: newPlaylist[i].coverAlbum,
+          description: newPlaylist[i].description,
+          name: newPlaylist[i].name,
+        });
+        if (res.isSuccess) {
+          dispatch(openToast({ message: res.message, severity: "success" }));
+        } else {
+          dispatch(openToast({ message: res.message, severity: "error" }));
+        }
       }
     }
 
@@ -117,22 +130,20 @@ const Home = () => {
 
   const handleDelete = async () => {
     setCurrentPlaying(null);
-    const res = await Service.deleteSelected(selected as string[]);
+    console.log(selected);
+    const res = await Service.deleteMusics(selected as string[]);
     if (res.isSuccess && res.musics && res.musics.length > 0) {
       setPlaylist(res.musics);
       dispatch(openToast({ message: res.message, severity: "success" }));
     } else {
       dispatch(openToast({ message: res.message, severity: "error" }));
     }
+    setDeleteModalOpen(false);
   };
 
   const handleSelect = (ids: GridSelectionModel) => {
     setSelected(ids);
   };
-
-  useEffect(() => {
-    console.log(currentPlaying);
-  });
 
   useEffect(() => {
     let flag = true;
@@ -178,6 +189,10 @@ const Home = () => {
       const newPlaylist = [...playlist];
       newPlaylist.forEach((p) => (p.isPlaying = false));
       setPlaylist(newPlaylist);
+      setAudioSrc(undefined);
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
     }
   }, [currentPlaying]);
 
@@ -261,6 +276,7 @@ const Home = () => {
         onCloseHandler={() => setEditModalOpen(false)}
       />
       <audio
+        ref={audioRef}
         style={{
           position: "absolute",
           bottom: 0,
@@ -273,7 +289,7 @@ const Home = () => {
         onEnded={(e) => {
           dispatch(openToast({ message: "Song ended", severity: "info" }));
           setCurrentPlaying(null);
-          setAudioSrc(null);
+          setAudioSrc(undefined);
         }}
       />
     </Box>

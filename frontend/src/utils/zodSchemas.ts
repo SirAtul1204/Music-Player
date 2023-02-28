@@ -24,6 +24,7 @@ export const GetMusicResponseSchema = z.object({
 export const DeleteMusicResponseSchema = z.object({
   message: z.string(),
   isSuccess: z.boolean(),
+  count: z.number(),
   musics: z.array(
     z.object({
       id: z.string(),

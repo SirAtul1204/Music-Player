@@ -54,3 +54,11 @@ export interface IAddMusic {
   artist: string;
   file: File;
 }
+
+export interface IEditMusic {
+  id: string;
+  name: string;
+  description: string;
+  coverAlbum: string;
+  artist: string;
+}

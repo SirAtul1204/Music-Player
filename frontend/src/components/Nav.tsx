@@ -15,7 +15,6 @@ const Nav = () => {
 
   const handleLogout = async () => {
     const res = await Service.logout();
-    console.log(res);
     if (res.isSuccess) {
       dispatch(openToast({ message: "Logged out", severity: "success" }));
 
