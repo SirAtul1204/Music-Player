@@ -4,7 +4,7 @@ Built using React on Frontend and Nest.js on Backend
 
 ## To test deployed version
 
-The app is deployed on free-tier of Render.com due to which it can have **long first load wait time (around 5 minutes)**, kindly bear with it. 2nd load onwards is much faster until the app gets inactive again.
+The app is deployed on free-tier of Render.com due to which it can have `**long first load wait time (around 5 minutes)**`, kindly bear with it. 2nd load onwards is much faster until the app gets inactive again.
 
 - Visit https://music-player-frontend.onrender.com
 
