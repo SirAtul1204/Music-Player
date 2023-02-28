@@ -3,6 +3,7 @@ import {
   DeleteMusicResponseSchema,
   GeneralResponseSchema,
   GetMusicResponseSchema,
+  PlayMusicResponseSchema,
 } from "./zodSchemas";
 
 function delay(time = 100) {
@@ -171,6 +172,31 @@ export default class Service {
       return {
         message: "Couldn't save your file, please try again",
         isSuccess: false,
+      };
+    }
+  }
+
+  static async play(id: string) {
+    try {
+      const response = await fetch(backendUrl + "music/play/" + id, {
+        method: "GET",
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const res = await response.json();
+      console.log(res);
+      const data = PlayMusicResponseSchema.parse(res);
+      return data;
+    } catch (e) {
+      console.error(e);
+      return {
+        message: "Can't play that song. Please try again!",
+        isSuccess: false,
+        url: "",
       };
     }
   }

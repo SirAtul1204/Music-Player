@@ -39,3 +39,9 @@ export const GeneralResponseSchema = z.object({
   message: z.string(),
   isSuccess: z.boolean(),
 });
+
+export const PlayMusicResponseSchema = z.object({
+  message: z.string(),
+  isSuccess: z.boolean(),
+  url: z.array(z.string()),
+});

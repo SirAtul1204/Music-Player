@@ -79,6 +79,7 @@ const Home = () => {
   const [selected, setSelected] = useState<GridSelectionModel>([]);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [audioSrc, setAudioSrc] = useState<any>();
 
   const handlePlay = (params: GridCellParams, e: MuiEvent) => {
     if (params.field === "playButton") {
@@ -162,6 +163,24 @@ const Home = () => {
     }
   }, [dispatch, isAuth]);
 
+  useEffect(() => {
+    if (currentPlaying) {
+      Service.play(currentPlaying.id).then((data) => {
+        if (data.isSuccess) {
+          dispatch(openToast({ message: data.message, severity: "info" }));
+          setAudioSrc(data.url);
+        } else {
+          dispatch(openToast({ message: data.message, severity: "error" }));
+          setCurrentPlaying(null);
+        }
+      });
+    } else {
+      const newPlaylist = [...playlist];
+      newPlaylist.forEach((p) => (p.isPlaying = false));
+      setPlaylist(newPlaylist);
+    }
+  }, [currentPlaying]);
+
   if (isAuth === null) {
     return <Loader />;
   }
@@ -241,7 +260,7 @@ const Home = () => {
         isModalOpen={isEditModalOpen}
         onCloseHandler={() => setEditModalOpen(false)}
       />
-      {/* <audio
+      <audio
         style={{
           position: "absolute",
           bottom: 0,
@@ -250,8 +269,13 @@ const Home = () => {
           height: 0,
         }}
         autoPlay
-        src="https://download.samplelib.com/mp3/sample-3s.mp3"
-      /> */}
+        src={audioSrc}
+        onEnded={(e) => {
+          dispatch(openToast({ message: "Song ended", severity: "info" }));
+          setCurrentPlaying(null);
+          setAudioSrc(null);
+        }}
+      />
     </Box>
   );
 };
