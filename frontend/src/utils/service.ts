@@ -10,7 +10,8 @@ function delay(time = 100) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
-const backendUrl = process.env.BACKEND_URL ?? "http://localhost:5000/";
+const backendUrl =
+  process.env.REACT_APP_BACKEND_URL ?? "http://localhost:5000/";
 
 export default class Service {
   static async login(loginInformation: ILogin) {
