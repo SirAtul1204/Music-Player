@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MusicEntity } from 'src/entities/MusicEntity';
 import { UserEntity } from 'src/entities/UserEntity';
+import { bucket } from 'src/main';
 import { CreateMusicDto } from './dto/create-music.dto';
 import { UpdateMusicDto } from './dto/update-music.dto';
 
@@ -37,7 +38,33 @@ export class MusicService {
     });
   }
 
-  async deleteMusics(ids: string[]) {
-    await MusicEntity.delete(ids);
+  async deleteMusics(ids: string[], userId: string) {
+    let count = 0;
+    ids.forEach(async (id) => {
+      if (
+        await MusicEntity.findOne({
+          where: {
+            id,
+            user: {
+              id: userId,
+            },
+          },
+        })
+      ) {
+        await MusicEntity.delete(id);
+        count++;
+        bucket.file(`${userId}/${id}.mp3`).delete();
+      }
+    });
+
+    return count;
+  }
+
+  async findMusicById(id: string) {
+    const music = await MusicEntity.findOne({
+      where: { id },
+      relations: { user: true },
+    });
+    return music;
   }
 }
