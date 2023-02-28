@@ -20,7 +20,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'https://siratul-music-player.netlify.app',
       'https://master--siratul-music-player.netlify.app',
-      'https://music-player-frontend.onrender.com/',
+      'https://music-player-frontend.onrender.com',
     ],
   });
   app.use(cookieParser());
