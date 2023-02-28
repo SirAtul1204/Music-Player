@@ -19,6 +19,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://siratul-music-player.netlify.app',
+      'https://master--siratul-music-player.netlify.app',
     ],
   });
   app.use(cookieParser());
