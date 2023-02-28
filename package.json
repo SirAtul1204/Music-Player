@@ -1,0 +1,12 @@
+{
+  "name": "DPD",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/SirAtul1204/Music-Player.git",
+  "scripts": {
+    "start:backend": "yarn --cwd ./backend/ start",
+    "start:frontend": "yarn --cwd ./frontend/ start"
+  },
+  "author": "Atul Singh <asatulsingh20@gmail.com>",
+  "license": "MIT"
+}
