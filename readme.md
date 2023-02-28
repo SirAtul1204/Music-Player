@@ -10,6 +10,12 @@ The app is deployed on free-tier of Render.com due to which it can have **long f
 
 - If a loader is on the screen, it means the backend is waking up from sleep state, kindly wait for 3-4 minutes and refresh the page. All of this are Render's limitations
 
+- If you don't want to register, you can directly use the following credentials -
+  ```
+  Email : sunny@gmail.com
+  Password: 1234
+  ```
+
 ## To run locally
 
 ### Prerequisites
