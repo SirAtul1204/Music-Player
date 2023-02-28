@@ -1,6 +1,8 @@
 import {
   Get,
+  Param,
   Req,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -42,5 +44,17 @@ export class MusicController {
     const { userId } = request.user;
     const musics = await this.musicService.findAllMusic(userId);
     return { message: 'All musics fetched', isSuccess: true, musics };
+  }
+
+  @Get('play/:id')
+  @UseGuards(AuthGuard)
+  async play(@Req() request: RequestWithUser, @Param('id') id: string) {
+    const { userId } = request.user;
+    const url = await bucket.file(`${userId}/${id}.mp3`).getSignedUrl({
+      action: 'read',
+      expires: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+    });
+
+    return { message: 'Playing ...', isSuccess: true, url };
   }
 }
